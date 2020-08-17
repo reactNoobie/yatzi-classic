@@ -41,7 +41,7 @@ td, th {
 }
 
 td.remaining:hover {
-    background-image: linear-gradient(90deg, lime, limegreen);
+    background-image: linear-gradient(45deg, teal, lightblue);
 }
 
 .die-image {
@@ -76,13 +76,14 @@ table tr:nth-child(2n+1) {
 #roll-btn {}
 
 .remaining {
-    background-color: black;
+    /* background-color: black; */
 }
 
 .selected {
-    background-color: cyan;
+    /* background-image: linear-gradient(45deg, rgb(255, 255, 93), darkorange); */
+    background-image: linear-gradient(45deg, tomato, lightblue);
 }
 
 .confirmed {
-    background-color: deeppink;
+    background-image: linear-gradient(45deg, tomato, navy);
 }
