@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Yatzi Classic</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <script src="scripts/index.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Yatzi Classic</h1>
+    </header>
+    <main>
+        <table>
+            <thead>
+                <tr class="table-head">
+                    <th colspan="3" scope="colgroup">Minor</th>
+                    <th colspan="3" scope="colgroup">Major</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td class="remaining" id="score-1" data-score="null"></td>
+                    <td class="desc">one</td>
+                    <td>3X</td>
+                    <td class="remaining" id="score-7" data-score="null"></td>
+                    <td class="desc">three of a kind</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td class="remaining" id="score-2" data-score="null"></td>
+                    <td class="desc">two</td>
+                    <td>4X</td>
+                    <td class="remaining" id="score-8" data-score="null"></td>
+                    <td class="desc">four of a kind</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td class="remaining" id="score-3" data-score="null"></td>
+                    <td class="desc">three</td>
+                    <td>🏠</td>
+                    <td class="remaining" id="score-9" data-score="null"></td>
+                    <td class="desc">full house</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td class="remaining" id="score-4" data-score="null"></td>
+                    <td class="desc">four</td>
+                    <td>D</td>
+                    <td class="remaining" id="score-10" data-score="null"></td>
+                    <td class="desc">small straight</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td class="remaining" id="score-5" data-score="null"></td>
+                    <td class="desc">five</td>
+                    <td>D</td>
+                    <td class="remaining" id="score-11" data-score="null"></td>
+                    <td class="desc">large straight</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td class="remaining" id="score-6" data-score="null"></td>
+                    <td class="desc">six</td>
+                    <td>D</td>
+                    <td class="remaining" id="score-12" data-score="null"></td>
+                    <td class="desc">yatzi</td>
+                </tr>
+                <tr>
+                    <td>section bonus +35</td>
+                    <td>0 / 63</td>
+                    <td></td>
+                    <td>?</td>
+                    <td class="remaining" id="score-13" data-score="null"></td>
+                    <td class="desc">chance</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        <button id="roll-btn"></button>
+                        <button id="play-btn" disabled>Play</button>
+                    </td>
+                    <td class="die-image" id="die-1"><img src="images/1.png" alt="die facing 1"></td>
+                    <td class="die-image" id="die-2"><img src="images/2.png" alt="die facing 2"></td>
+                    <td class="die-image" id="die-3"><img src="images/3.png" alt="die facing 3"></td>
+                    <td class="die-image" id="die-4"><img src="images/4.png" alt="die facing 4"></td>
+                    <td class="die-image" id="die-5"><img src="images/5.png" alt="die facing 5"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </main>
+    <footer>
+        Footer
+    </footer>
+</body>
+
+</html>

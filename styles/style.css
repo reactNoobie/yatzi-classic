@@ -1,0 +1,88 @@
+/* * {
+    border: 2px solid red;
+} */
+
+html {
+    /* background-color: tomato; */
+    background-image: linear-gradient(22.5deg, orangered, blue);
+    font-size: 150%;
+    color: white;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+body {
+    margin: 0 100px;
+    /* background-color: rgb(0, 255, 135); */
+    background-image: linear-gradient(40deg, #ff8a00, #e52e71);
+    border: 5px solid #242424;
+}
+
+h1 {
+    text-align: center;
+}
+
+table {
+    background-color: mediumvioletred;
+    border: 3px dashed midnightblue;
+    margin: 0 auto;
+}
+
+td, th {
+    width: 50px;
+    /* border: 3px double indigo; */
+    padding: 10px;
+    text-align: center;
+    font-size: 25px;
+}
+
+.desc {
+    /* padding: 20px; */
+}
+
+td.remaining:hover {
+    background-image: linear-gradient(90deg, lime, limegreen);
+}
+
+.die-image {
+    background-image: linear-gradient(45deg, indigo, #e52e71);
+    /* background-image: linear-gradient(45deg, white, rgb(10, 189, 189)); */
+}
+
+td img {
+    width: 100px;
+    height: 100px;
+    visibility: hidden;
+}
+
+.table-head th {
+    background-color: rebeccapurple;
+}
+
+tfoot {
+    background-color: rebeccapurple;
+}
+
+table tr:nth-child(2n) {
+    /* background-image: linear-gradient(40deg, steelblue, lightblue); */
+    background-image: linear-gradient(40deg, lightblue, steelblue);
+}
+
+table tr:nth-child(2n+1) {
+    /* background-image: linear-gradient(40deg, indigo, steelblue); */
+    background-image: linear-gradient(40deg, steelblue, indigo);
+}
+
+#roll-btn {}
+
+.remaining {
+    background-color: black;
+}
+
+.selected {
+    background-color: cyan;
+}
+
+.confirmed {
+    background-color: deeppink;
+}
