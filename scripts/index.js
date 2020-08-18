@@ -231,7 +231,7 @@ const updateBonus = () => {
     minorScores.forEach(scoreElement => bonusScore += Number(scoreElement.dataset.score));
     const bonusContainer = document.querySelector('#bonus');
     bonusContainer.innerText = `${bonusScore}/63`;
-    if (bonusScore > MIN_MINOR_SCORE_FOR_BONUS) {
+    if (bonusScore >= MIN_MINOR_SCORE_FOR_BONUS) {
         bonusContainer.classList.add('confirmed');
         bonusContainer.innerText += ' (+35 yaay!)'
         bonusContainer.dataset.score = BONUS_SCORE;
