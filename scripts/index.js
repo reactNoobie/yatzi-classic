@@ -63,7 +63,6 @@ const fullHouseChecker = dice => {
     }
     const firstElement = uniqueDice[0];
     const firstElementCount = dice.filter(element => element === firstElement).length;
-    // if the first element came twice, the other should come three times and vice versa
     if (firstElementCount === REPEATED_DICE_COUNT_2_OF_A_KIND || firstElementCount === REPEATED_DICE_COUNT_3_OF_A_KIND) {
         console.log('full house yaay!');
         return SCORE_FOR_FULL_HOUSE;
@@ -131,67 +130,134 @@ const scoreCheckers = [
     chanceChecker,
 ];
 
-const roll = numberOfDice => {
-    const dice = [];
-    for (let i = 0; i < numberOfDice; i++) {
-        dice.push(Math.floor(Math.random() * 6) + 1);
-    }
-    return dice;
-};
-
-const updateRollButton = (rollButton, rollsLeft) => {
-    rollButton.innerText = `Roll (${rollsLeft})`;
-    if (rollsLeft === 0) {
-        rollButton.disabled = true;
-    }
-}
-
 // states
 let rollsLeft = NUMBER_OF_ROLLS;
 const scores = Array.from(new Array(NUMBER_OF_CATEGORIES)).map(_ => null);
 
-const rollButton = document.querySelector('#roll-btn');
-updateRollButton(rollButton, rollsLeft);
-rollButton.onclick = () => {
-    const dice = roll(NUMBER_OF_DICE);
-    dice.forEach((die, index) => {
-        const dieImg = document.querySelector(`#die-${index + 1} img`);
-        dieImg.src = `images/${die}.png`;
-        dieImg.alt = `Die facing ${die}`;
-        dieImg.style.visibility = 'visible';
-    });
+const updateRollButton = rollsLeft => {
+    const rollButton = document.querySelector('#roll-btn');
+    rollButton.innerText = `Roll (${rollsLeft})`;
+    rollButton.disabled = (rollsLeft === 0);
+};
 
+const updatePlayButton = () => {
+    const playButton = document.querySelector('#play-btn');
+    playButton.disabled = (document.querySelector('.score.selected') === null);
+};
+
+const setDieImage = (dieImageContainer, valueForDie) => {
+    const imageForDie = dieImageContainer.querySelector('img');
+    imageForDie.src = `images/${valueForDie}.png`;
+    imageForDie.alt = `Die facing ${valueForDie}`;
+    imageForDie.style.visibility = 'visible';
+};
+
+const getDiceAsArray = () => {
+    const result = [];
+    const dieElements = document.querySelectorAll('.die');
+    dieElements.forEach(dieElement => {
+        result.push(Number(dieElement.dataset.die));
+    });
+    return result;
+};
+
+const showPossibleScores = dice => {
     scoreCheckers.forEach((scoreChecker, index) => {
-        if (scores[index] === null) {
-            const scoreTd = document.querySelector(`#score-${index + 1}`);
+        const scoreContainer = document.querySelector(`#score-${index + 1}`);
+        if (scoreContainer.classList.contains('remaining')) {
             const score = scoreChecker(dice);
-            // scores[index] = score;
-            scoreTd.dataset.score = score;
-            scoreTd.innerText = score;
+            scoreContainer.innerText = score;
+            scoreContainer.dataset.score = score;
         }
     });
+};
 
-    updateRollButton(rollButton, --rollsLeft);
-}
-
-const remainings = document.querySelectorAll('.remaining');
-remainings.forEach(remaining => {
-    remaining.onclick = () => {
-        console.log('Clicked on something remaining');
-        const previouslySelected = document.querySelector('.selected');
-        if (previouslySelected && previouslySelected !== remaining) {
-            previouslySelected.classList.remove('selected');
-            previouslySelected.classList.add('remaining');
+// TODO: move inside function
+const remainingScores = document.querySelectorAll('.score.remaining');
+remainingScores.forEach(remainingScore => {
+    remainingScore.onclick = () => {
+        if (rollsLeft === NUMBER_OF_ROLLS) {
+            return;
         }
-        remaining.classList.remove('remaining');
-        remaining.classList.add('selected');
-
-        const playButton = document.querySelector('#play-btn');
-        playButton.disabled = false;
-        playButton.onclick = () => {
-            console.log('Got', remaining.dataset.score, 'points');
-            remaining.classList.remove('selected');
-            remaining.classList.add('confirmed');
-        };
+        const previouslySelectedScore = document.querySelector('.score.selected');
+        if (previouslySelectedScore && previouslySelectedScore !== remainingScore) {
+            previouslySelectedScore.classList.remove('selected');
+        }
+        remainingScore.classList.toggle('selected');
+        updatePlayButton();
     }
 });
+
+const clearUnconfirmedScores = () => {
+    const unconfirmedScores = document.querySelectorAll('.score:not(.confirmed)');
+    unconfirmedScores.forEach(score => {
+        score.innerText = '';
+        score.dataset.score = null;
+    });
+};
+
+const clearDice = () => {
+    const dice = document.querySelectorAll('.die');
+    dice.forEach(die => {
+        die.classList.remove('selected');
+        die.classList.add('remaining');
+        die.dataset.die = null;
+        die.querySelector('img').style.visibility = 'hidden';
+    });
+};
+
+const confirmSelectedScore = () => {
+    const selectedScore = document.querySelector('.score.selected');
+    selectedScore.classList.remove('selected');
+    selectedScore.classList.remove('remaining');
+    selectedScore.classList.add('confirmed');
+    selectedScore.onclick = null;
+};
+
+const updateTotalScore = () => {
+    let totalScore = 0;
+    const confirmedScores = document.querySelectorAll('.score.confirmed');
+    confirmedScores.forEach(confirmedScore => totalScore += Number(confirmedScore.dataset.score));
+    const totalScoreContainer = document.querySelector('#total');
+    totalScoreContainer.innerText = totalScore;
+};
+
+const onTurnPlayed = () => {
+    confirmSelectedScore();
+    updateTotalScore();
+    updatePlayButton();
+    rollsLeft = NUMBER_OF_ROLLS;
+    updateRollButton(rollsLeft);
+    clearUnconfirmedScores();
+    clearDice();
+};
+
+const playButton = document.querySelector('#play-btn');
+playButton.onclick = onTurnPlayed;
+
+const deselectElements = querySelector => {
+    const selectedElements = document.querySelectorAll(querySelector);
+    if (selectedElements) {
+        selectedElements.forEach(element => element.classList.remove('selected'));
+    }
+}
+
+// TODO: move inside function
+const rollButton = document.querySelector('#roll-btn');
+rollButton.onclick = () => {
+    deselectElements('.score.selected');
+    const remainingDice = document.querySelectorAll('.die.remaining');
+    remainingDice.forEach(die => {
+        const valueForDie = Math.floor(Math.random() * 6) + 1;
+        setDieImage(die, valueForDie);
+        die.dataset.die = valueForDie;
+        die.onclick = () => {
+            die.classList.toggle('remaining');
+            die.classList.toggle('selected');
+        }
+    });
+
+    const dice = getDiceAsArray();
+    showPossibleScores(dice);
+    updateRollButton(--rollsLeft);
+}

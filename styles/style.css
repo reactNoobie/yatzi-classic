@@ -40,13 +40,24 @@ td, th {
     /* padding: 20px; */
 }
 
-td.remaining:hover {
+.score {
+    font-size: 200%;
+}
+
+.score.remaining:not(.selected):hover {
     background-image: linear-gradient(45deg, teal, lightblue);
 }
 
-.die-image {
+.score.remaining:not(.selected) {
+    opacity: 0.4;
+}
+
+.die {
     background-image: linear-gradient(45deg, indigo, #e52e71);
-    /* background-image: linear-gradient(45deg, white, rgb(10, 189, 189)); */
+}
+
+.die.remaining:hover {
+    background-image: linear-gradient(45deg, black, white);
 }
 
 td img {
@@ -56,10 +67,6 @@ td img {
 }
 
 .table-head th {
-    background-color: rebeccapurple;
-}
-
-tfoot {
     background-color: rebeccapurple;
 }
 
@@ -86,4 +93,15 @@ table tr:nth-child(2n+1) {
 
 .confirmed {
     background-image: linear-gradient(45deg, tomato, navy);
+}
+
+button {
+    color: white;
+    font-size: 120%;
+    margin: 10px;
+    background-image: linear-gradient(45deg, indigo, #e52e71);
+}
+
+button:disabled {
+    opacity: 0.2;
 }
