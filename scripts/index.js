@@ -2,6 +2,9 @@ const NUMBER_OF_DICE = 5;
 const NUMBER_OF_ROLLS = 3;
 const NUMBER_OF_CATEGORIES = 13;
 
+const MIN_MINOR_SCORE_FOR_BONUS = 63;
+const BONUS_SCORE = 35;
+
 const UNIQUE_DICE_COUNT_YATZI = 1;
 const UNIQUE_DICE_COUNT_L_STRAIGHT = 5;
 const UNIQUE_DICE_COUNT_S_STRAIGHT = 4;
@@ -189,7 +192,7 @@ remainingScores.forEach(remainingScore => {
 });
 
 const clearUnconfirmedScores = () => {
-    const unconfirmedScores = document.querySelectorAll('.score:not(.confirmed)');
+    const unconfirmedScores = document.querySelectorAll('.score:not(.confirmed):not(#bonus)');
     unconfirmedScores.forEach(score => {
         score.innerText = '';
         score.dataset.score = null;
@@ -222,8 +225,22 @@ const updateTotalScore = () => {
     totalScoreContainer.innerText = totalScore;
 };
 
+const updateBonus = () => {
+    let bonusScore = 0;
+    const minorScores = document.querySelectorAll('.score.minor.confirmed');
+    minorScores.forEach(scoreElement => bonusScore += Number(scoreElement.dataset.score));
+    const bonusContainer = document.querySelector('#bonus');
+    bonusContainer.innerText = `${bonusScore}/63`;
+    if (bonusScore > MIN_MINOR_SCORE_FOR_BONUS) {
+        bonusContainer.classList.add('confirmed');
+        bonusContainer.innerText += ' (+35 yaay!)'
+        bonusContainer.dataset.score = BONUS_SCORE;
+    }
+};
+
 const onTurnPlayed = () => {
     confirmSelectedScore();
+    updateBonus();
     updateTotalScore();
     updatePlayButton();
     rollsLeft = NUMBER_OF_ROLLS;
