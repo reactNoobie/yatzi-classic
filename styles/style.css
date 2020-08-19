@@ -25,11 +25,15 @@ h1, h2 {
 }
 
 #game-over {
-    display: none;
+    /* display: none; */
 }
 
 #game-over button {
     font-size: 80%;
+}
+
+main {
+    display: none;
 }
 
 table {

@@ -1,9 +1,11 @@
 const NUMBER_OF_DICE = 5;
-const NUMBER_OF_ROLLS = 3;
+const ROLLS_PER_TURN = 3;
 const NUMBER_OF_CATEGORIES = 13;
 
 const GAME_OVER_POPUP_DELAY = 1000;
 
+const INITIAL_TEXT_TOTAL = document.querySelector('#total').innerText;
+const INITIAL_TEXT_BONUS = document.querySelector('#bonus').innerText;
 const MIN_MINOR_SCORE_FOR_BONUS = 63;
 const BONUS_SCORE = 35;
 
@@ -136,8 +138,57 @@ const scoreCheckers = [
 ];
 
 // states
-let rollsLeft = NUMBER_OF_ROLLS;
-const scores = Array.from(new Array(NUMBER_OF_CATEGORIES)).map(_ => null);
+let rollsLeft = ROLLS_PER_TURN;
+
+const resetAllScores = () => {
+    document.querySelectorAll('.score:not(#bonus)').forEach(score => {
+        score.classList.remove('confirmed');
+        score.classList.remove('selected');
+        score.classList.add('remaining');
+        score.dataset.score = null;
+        score.innerText = '';
+    });
+};
+
+const resetBonus = () => {
+    const bonus = document.querySelector('#bonus');
+    bonus.classList.remove('confirmed');
+    bonus.dataset.score = null;
+    bonus.innerText = INITIAL_TEXT_BONUS;
+};
+
+const resetTotal = () => {
+    const total = document.querySelector('#total');
+    total.dataset.total = null;
+    total.innerText = INITIAL_TEXT_TOTAL;
+};
+
+const clearDice = () => {
+    const dice = document.querySelectorAll('.die');
+    dice.forEach(die => {
+        die.classList.remove('selected');
+        die.classList.add('remaining');
+        die.dataset.die = null;
+        die.querySelector('img').style.visibility = 'hidden';
+    });
+};
+
+const reset = () => {
+    resetAllScores();
+    resetBonus();
+    resetTotal();
+    clearDice();
+    rollsLeft = ROLLS_PER_TURN;
+
+    // add click listeners
+    addListenerToRollButton();
+    addListenersToScores();
+
+    // show the contents
+    document.querySelector('main').style.display = 'block';
+}
+
+document.querySelector('#new-game-btn').onclick = reset;
 
 const updateRollButton = rollsLeft => {
     const rollButton = document.querySelector('#roll-btn');
@@ -177,37 +228,28 @@ const showPossibleScores = dice => {
     });
 };
 
-// TODO: move inside function
-const remainingScores = document.querySelectorAll('.score.remaining');
-remainingScores.forEach(remainingScore => {
-    remainingScore.onclick = () => {
-        if (rollsLeft === NUMBER_OF_ROLLS) {
-            return;
+const addListenersToScores = () => {
+    const remainingScores = document.querySelectorAll('.score.remaining');
+    remainingScores.forEach(remainingScore => {
+        remainingScore.onclick = () => {
+            if (rollsLeft === ROLLS_PER_TURN) {
+                return;
+            }
+            const previouslySelectedScore = document.querySelector('.score.selected');
+            if (previouslySelectedScore && previouslySelectedScore !== remainingScore) {
+                previouslySelectedScore.classList.remove('selected');
+            }
+            remainingScore.classList.toggle('selected');
+            updatePlayButton();
         }
-        const previouslySelectedScore = document.querySelector('.score.selected');
-        if (previouslySelectedScore && previouslySelectedScore !== remainingScore) {
-            previouslySelectedScore.classList.remove('selected');
-        }
-        remainingScore.classList.toggle('selected');
-        updatePlayButton();
-    }
-});
-
-const clearUnconfirmedScores = () => {
-    const unconfirmedScores = document.querySelectorAll('.score:not(.confirmed):not(#bonus)');
-    unconfirmedScores.forEach(score => {
-        score.innerText = '';
-        score.dataset.score = null;
     });
 };
 
-const clearDice = () => {
-    const dice = document.querySelectorAll('.die');
-    dice.forEach(die => {
-        die.classList.remove('selected');
-        die.classList.add('remaining');
-        die.dataset.die = null;
-        die.querySelector('img').style.visibility = 'hidden';
+const clearSuggestedScores = () => {
+    const suggestedScores = document.querySelectorAll('.score.remaining');
+    suggestedScores.forEach(score => {
+        score.innerText = '';
+        score.dataset.score = null;
     });
 };
 
@@ -265,9 +307,9 @@ const onTurnPlayed = () => {
     updateBonus();
     updateTotalScore();
     updatePlayButton();
-    rollsLeft = NUMBER_OF_ROLLS;
+    rollsLeft = ROLLS_PER_TURN;
     updateRollButton(rollsLeft);
-    clearUnconfirmedScores();
+    clearSuggestedScores();
     clearDice();
     checkGameOver();
 };
@@ -282,22 +324,22 @@ const deselectElements = querySelector => {
     }
 }
 
-// TODO: move inside function
-const rollButton = document.querySelector('#roll-btn');
-rollButton.onclick = () => {
-    deselectElements('.score.selected');
-    const remainingDice = document.querySelectorAll('.die.remaining');
-    remainingDice.forEach(die => {
-        const valueForDie = Math.floor(Math.random() * 6) + 1;
-        setDieImage(die, valueForDie);
-        die.dataset.die = valueForDie;
-        die.onclick = () => {
-            die.classList.toggle('remaining');
-            die.classList.toggle('selected');
-        }
-    });
-
-    const dice = getDiceAsArray();
-    showPossibleScores(dice);
-    updateRollButton(--rollsLeft);
-}
+const addListenerToRollButton = () => {
+    const rollButton = document.querySelector('#roll-btn');
+    rollButton.onclick = () => {
+        deselectElements('.score.selected');
+        const remainingDice = document.querySelectorAll('.die.remaining');
+        remainingDice.forEach(die => {
+            const valueForDie = Math.floor(Math.random() * 6) + 1;
+            setDieImage(die, valueForDie);
+            die.dataset.die = valueForDie;
+            die.onclick = () => {
+                die.classList.toggle('remaining');
+                die.classList.toggle('selected');
+            }
+        });
+        const dice = getDiceAsArray();
+        showPossibleScores(dice);
+        updateRollButton(--rollsLeft);
+    }
+};
