@@ -144,9 +144,17 @@ const resetAllScores = () => {
     document.querySelectorAll('.score:not(#bonus)').forEach(score => {
         score.classList.remove('confirmed');
         score.classList.remove('selected');
-        score.classList.add('remaining');
         score.dataset.score = null;
         score.innerText = '';
+    });
+};
+
+const clearSuggestedScores = () => {
+    const suggestedScores = document.querySelectorAll('.score:not(.confirmed):not(#bonus)');
+    suggestedScores.forEach(score => {
+        score.innerText = '';
+        score.dataset.score = null;
+        score.onclick = null;
     });
 };
 
@@ -167,9 +175,9 @@ const clearDice = () => {
     const dice = document.querySelectorAll('.die');
     dice.forEach(die => {
         die.classList.remove('selected');
+        die.querySelector('img').style.visibility = 'hidden';
         die.dataset.die = null;
         die.onclick = null;
-        die.querySelector('img').style.visibility = 'hidden';
     });
 };
 
@@ -180,13 +188,12 @@ const reset = () => {
     clearDice();
 
     rollsLeft = ROLLS_PER_TURN;
-    
+    updateRollButton(rollsLeft);
+    updatePlayButton();
 
-    // add click listeners
     addListenerToRollButton();
-    addListenersToScores();
+    addListenerToPlayButton();
 
-    // show the contents
     document.querySelector('main').style.display = 'block';
 }
 
@@ -203,11 +210,27 @@ const updatePlayButton = () => {
     playButton.disabled = (document.querySelector('.score.selected') === null);
 };
 
-const setDieImage = (dieImageContainer, valueForDie) => {
-    const imageForDie = dieImageContainer.querySelector('img');
-    imageForDie.src = `images/${valueForDie}.png`;
-    imageForDie.alt = `Die facing ${valueForDie}`;
-    imageForDie.style.visibility = 'visible';
+const onRemainingScoreClicked = selectedScore => {
+    const previouslySelectedScore = document.querySelector('.score.selected');
+    if (previouslySelectedScore && previouslySelectedScore !== selectedScore) {
+        previouslySelectedScore.classList.remove('selected');
+    }
+    selectedScore.classList.toggle('selected');
+    updatePlayButton();
+};
+
+const generatePossibleScores = dice => {
+    scoreCheckers.forEach((scoreChecker, index) => {
+        const scoreContainer = document.querySelector(`#score-${index + 1}`);
+        if (!scoreContainer.classList.contains('confirmed')) {
+            const score = scoreChecker(dice);
+            scoreContainer.innerText = score;
+            scoreContainer.dataset.score = score;
+            scoreContainer.onclick = () => {
+                onRemainingScoreClicked(scoreContainer);
+            };
+        }
+    });
 };
 
 const getDiceAsArray = () => {
@@ -219,48 +242,60 @@ const getDiceAsArray = () => {
     return result;
 };
 
-const showPossibleScores = dice => {
-    scoreCheckers.forEach((scoreChecker, index) => {
-        const scoreContainer = document.querySelector(`#score-${index + 1}`);
-        if (scoreContainer.classList.contains('remaining')) {
-            const score = scoreChecker(dice);
-            scoreContainer.innerText = score;
-            scoreContainer.dataset.score = score;
+const setDieImage = (dieImageContainer, valueForDie) => {
+    const imageForDie = dieImageContainer.querySelector('img');
+    imageForDie.src = `images/${valueForDie}.png`;
+    imageForDie.alt = `Die facing ${valueForDie}`;
+    imageForDie.style.visibility = 'visible';
+};
+
+const rollDice = () => {
+    const remainingDice = document.querySelectorAll('.die:not(.selected)');
+    remainingDice.forEach(die => {
+        const valueForDie = Math.floor(Math.random() * 6) + 1;
+        setDieImage(die, valueForDie);
+        die.dataset.die = valueForDie;
+        die.onclick = () => {
+            die.classList.toggle('selected');
         }
     });
 };
 
-const addListenersToScores = () => {
-    const remainingScores = document.querySelectorAll('.score.remaining');
-    remainingScores.forEach(remainingScore => {
-        remainingScore.onclick = () => {
-            if (rollsLeft === ROLLS_PER_TURN) {
-                return;
-            }
-            const previouslySelectedScore = document.querySelector('.score.selected');
-            if (previouslySelectedScore && previouslySelectedScore !== remainingScore) {
-                previouslySelectedScore.classList.remove('selected');
-            }
-            remainingScore.classList.toggle('selected');
-            updatePlayButton();
-        }
-    });
+const deselectElements = querySelector => {
+    const selectedElements = document.querySelectorAll(querySelector);
+    if (selectedElements) {
+        selectedElements.forEach(element => element.classList.remove('selected'));
+    }
+}
+
+const addListenerToRollButton = () => {
+    document.querySelector('#roll-btn').onclick = () => {
+        deselectElements('.score.selected');
+        rollDice();
+        generatePossibleScores(getDiceAsArray());
+        updateRollButton(--rollsLeft);
+        updatePlayButton();
+    }
 };
 
-const clearSuggestedScores = () => {
-    const suggestedScores = document.querySelectorAll('.score.remaining');
-    suggestedScores.forEach(score => {
-        score.innerText = '';
-        score.dataset.score = null;
-    });
+const onGameOver = () => {
+    // used setTimeout because the alert would come before the scores/total score have been updated on Chrome
+    // reference: https://stackoverflow.com/questions/38960101/why-is-element-not-being-shown-before-alert
+    setTimeout(() => {
+        alert(`Game over! Score: ${document.querySelector('#total').dataset.total}`);
+    }, GAME_OVER_POPUP_DELAY);
+    const gameOverContainer = document.querySelector('#game-over');
+    gameOverContainer.style.display = 'block';
+    rollsLeft = 0;
+    updateRollButton(rollsLeft);
+    updatePlayButton();
 };
 
-const confirmSelectedScore = () => {
-    const selectedScore = document.querySelector('.score.selected');
-    selectedScore.classList.remove('selected');
-    selectedScore.classList.remove('remaining');
-    selectedScore.classList.add('confirmed');
-    selectedScore.onclick = null;
+const checkGameOver = () => {
+    const turnsPlayed = document.querySelectorAll('.score.confirmed:not(#bonus)').length;
+    if (turnsPlayed === NUMBER_OF_CATEGORIES) {
+        onGameOver();
+    }
 };
 
 const updateTotalScore = () => {
@@ -277,7 +312,7 @@ const updateBonus = () => {
     const minorScores = document.querySelectorAll('.score.minor.confirmed');
     minorScores.forEach(scoreElement => bonusScore += Number(scoreElement.dataset.score));
     const bonusContainer = document.querySelector('#bonus');
-    bonusContainer.innerText = `${bonusScore}/63`;
+    bonusContainer.innerText = `${bonusScore}/${MIN_MINOR_SCORE_FOR_BONUS}`;
     if (bonusScore >= MIN_MINOR_SCORE_FOR_BONUS) {
         bonusContainer.classList.add('confirmed');
         bonusContainer.innerText += ' (+35 yaay!)'
@@ -285,62 +320,26 @@ const updateBonus = () => {
     }
 };
 
-const onGameOver = () => {
-    // used setTimeout because the alert would come before the scores/total score have been updated on Chrome
-    // reference: https://stackoverflow.com/questions/38960101/why-is-element-not-being-shown-before-alert
-    setTimeout(() => {
-        alert(`Game over! Score: ${document.querySelector('#total').dataset.total}`);
-    }, GAME_OVER_POPUP_DELAY);
-    const gameOverContainer = document.querySelector('#game-over');
-    gameOverContainer.style.display = 'block';
-    rollsLeft = 0;
-    updateRollButton(rollsLeft);
-};
-
-const checkGameOver = () => {
-    const turnsPlayed = document.querySelectorAll('.score.confirmed:not(#bonus)').length;
-    if (turnsPlayed === NUMBER_OF_CATEGORIES) {
-        onGameOver();
-    }
+const confirmSelectedScore = () => {
+    const selectedScore = document.querySelector('.score.selected');
+    selectedScore.classList.remove('selected');
+    selectedScore.classList.add('confirmed');
+    selectedScore.onclick = null;
 };
 
 const onTurnPlayed = () => {
     confirmSelectedScore();
     updateBonus();
     updateTotalScore();
-    updatePlayButton();
-    rollsLeft = ROLLS_PER_TURN;
-    updateRollButton(rollsLeft);
     clearSuggestedScores();
     clearDice();
+    rollsLeft = ROLLS_PER_TURN;
+    updateRollButton(rollsLeft);
+    updatePlayButton();
     checkGameOver();
 };
 
-const playButton = document.querySelector('#play-btn');
-playButton.onclick = onTurnPlayed;
-
-const deselectElements = querySelector => {
-    const selectedElements = document.querySelectorAll(querySelector);
-    if (selectedElements) {
-        selectedElements.forEach(element => element.classList.remove('selected'));
-    }
-}
-
-const addListenerToRollButton = () => {
-    const rollButton = document.querySelector('#roll-btn');
-    rollButton.onclick = () => {
-        deselectElements('.score.selected');
-        const remainingDice = document.querySelectorAll('.die:not(.selected)');
-        remainingDice.forEach(die => {
-            const valueForDie = Math.floor(Math.random() * 6) + 1;
-            setDieImage(die, valueForDie);
-            die.dataset.die = valueForDie;
-            die.onclick = () => {
-                die.classList.toggle('selected');
-            }
-        });
-        const dice = getDiceAsArray();
-        showPossibleScores(dice);
-        updateRollButton(--rollsLeft);
-    }
+const addListenerToPlayButton = () => {
+    const playButton = document.querySelector('#play-btn');
+    playButton.onclick = onTurnPlayed;
 };
