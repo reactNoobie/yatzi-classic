@@ -18,8 +18,18 @@ body {
     border: 5px solid #242424;
 }
 
-h1 {
+h1, h2 {
+    border: 4px double midnightblue;
     text-align: center;
+    font-size: 200%;
+}
+
+#game-over {
+    display: none;
+}
+
+#game-over button {
+    font-size: 80%;
 }
 
 table {
