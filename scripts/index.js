@@ -168,6 +168,7 @@ const clearDice = () => {
     dice.forEach(die => {
         die.classList.remove('selected');
         die.dataset.die = null;
+        die.onclick = null;
         die.querySelector('img').style.visibility = 'hidden';
     });
 };
