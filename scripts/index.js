@@ -205,6 +205,7 @@ const clearDice = () => {
         die.classList.remove('selected');
         die.classList.add('remaining');
         die.dataset.die = null;
+        die.onclick = null;
         die.querySelector('img').style.visibility = 'hidden';
     });
 };
