@@ -2,6 +2,8 @@ const NUMBER_OF_DICE = 5;
 const NUMBER_OF_ROLLS = 3;
 const NUMBER_OF_CATEGORIES = 13;
 
+const GAME_OVER_POPUP_DELAY = 1000;
+
 const MIN_MINOR_SCORE_FOR_BONUS = 63;
 const BONUS_SCORE = 35;
 
@@ -223,6 +225,7 @@ const updateTotalScore = () => {
     confirmedScores.forEach(confirmedScore => totalScore += Number(confirmedScore.dataset.score));
     const totalScoreContainer = document.querySelector('#total');
     totalScoreContainer.innerText = totalScore;
+    totalScoreContainer.dataset.total = totalScore;
 };
 
 const updateBonus = () => {
@@ -238,6 +241,25 @@ const updateBonus = () => {
     }
 };
 
+const onGameOver = () => {
+    // used setTimeout because the alert would come before the scores/total score have been updated on Chrome
+    // reference: https://stackoverflow.com/questions/38960101/why-is-element-not-being-shown-before-alert
+    setTimeout(() => {
+        alert(`Game over! Score: ${document.querySelector('#total').dataset.total}`);
+    }, GAME_OVER_POPUP_DELAY);
+    const gameOverContainer = document.querySelector('#game-over');
+    gameOverContainer.style.display = 'block';
+    rollsLeft = 0;
+    updateRollButton(rollsLeft);
+};
+
+const checkGameOver = () => {
+    const turnsPlayed = document.querySelectorAll('.score.confirmed:not(#bonus)').length;
+    if (turnsPlayed === NUMBER_OF_CATEGORIES) {
+        onGameOver();
+    }
+};
+
 const onTurnPlayed = () => {
     confirmSelectedScore();
     updateBonus();
@@ -247,6 +269,7 @@ const onTurnPlayed = () => {
     updateRollButton(rollsLeft);
     clearUnconfirmedScores();
     clearDice();
+    checkGameOver();
 };
 
 const playButton = document.querySelector('#play-btn');
