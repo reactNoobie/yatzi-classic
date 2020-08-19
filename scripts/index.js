@@ -167,7 +167,6 @@ const clearDice = () => {
     const dice = document.querySelectorAll('.die');
     dice.forEach(die => {
         die.classList.remove('selected');
-        die.classList.add('remaining');
         die.dataset.die = null;
         die.querySelector('img').style.visibility = 'hidden';
     });
@@ -178,7 +177,9 @@ const reset = () => {
     resetBonus();
     resetTotal();
     clearDice();
+
     rollsLeft = ROLLS_PER_TURN;
+    
 
     // add click listeners
     addListenerToRollButton();
@@ -328,13 +329,12 @@ const addListenerToRollButton = () => {
     const rollButton = document.querySelector('#roll-btn');
     rollButton.onclick = () => {
         deselectElements('.score.selected');
-        const remainingDice = document.querySelectorAll('.die.remaining');
+        const remainingDice = document.querySelectorAll('.die:not(.selected)');
         remainingDice.forEach(die => {
             const valueForDie = Math.floor(Math.random() * 6) + 1;
             setDieImage(die, valueForDie);
             die.dataset.die = valueForDie;
             die.onclick = () => {
-                die.classList.toggle('remaining');
                 die.classList.toggle('selected');
             }
         });
