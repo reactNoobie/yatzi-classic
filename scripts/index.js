@@ -26,6 +26,9 @@ const SCORE_FOR_L_STRAIGHT = 40;
 const SCORE_FOR_S_STRAIGHT = 30;
 const SCORE_FOR_FULL_HOUSE = 25;
 
+const PROMPT_MESSAGE = 'Are you sure? Type "YES" to confirm';
+const PROMPT_CONFIRM_KEYWORD = 'YES';
+
 const yatziChecker = dice => {
     console.log('Checking', dice, 'for yatzi');
     const uniqueDice = [...new Set(dice)];
@@ -137,8 +140,9 @@ const scoreCheckers = [
     chanceChecker,
 ];
 
-// states
-let rollsLeft = ROLLS_PER_TURN;
+const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+const load = key => JSON.parse(localStorage.getItem(key));
+const remove = key => localStorage.removeItem(key);
 
 const resetAllScores = () => {
     document.querySelectorAll('.score:not(#bonus)').forEach(score => {
@@ -146,6 +150,7 @@ const resetAllScores = () => {
         score.classList.remove('selected');
         score.dataset.score = null;
         score.innerText = '';
+        score.onclick = null;
     });
 };
 
@@ -182,6 +187,10 @@ const clearDice = () => {
 };
 
 const reset = () => {
+    if (isGameInProgress() && prompt(PROMPT_MESSAGE) !== PROMPT_CONFIRM_KEYWORD) {
+        return;
+    }
+    localStorage.clear();
     resetAllScores();
     resetBonus();
     resetTotal();
@@ -190,11 +199,6 @@ const reset = () => {
     rollsLeft = ROLLS_PER_TURN;
     updateRollButton(rollsLeft);
     updatePlayButton();
-
-    addListenerToRollButton();
-    addListenerToPlayButton();
-
-    document.querySelector('main').style.display = 'block';
 }
 
 document.querySelector('#new-game-btn').onclick = reset;
@@ -272,9 +276,13 @@ const addListenerToRollButton = () => {
     document.querySelector('#roll-btn').onclick = () => {
         deselectElements('.score.selected');
         rollDice();
-        generatePossibleScores(getDiceAsArray());
-        updateRollButton(--rollsLeft);
+        rollsLeft--;
+        const dice = getDiceAsArray();
+        generatePossibleScores(dice);
+        updateRollButton(rollsLeft);
         updatePlayButton();
+        save('dice', dice);
+        save('rollsLeft', rollsLeft);
     }
 };
 
@@ -284,8 +292,6 @@ const onGameOver = () => {
     setTimeout(() => {
         alert(`Game over! Score: ${document.querySelector('#total').dataset.total}`);
     }, GAME_OVER_POPUP_DELAY);
-    const gameOverContainer = document.querySelector('#game-over');
-    gameOverContainer.style.display = 'block';
     rollsLeft = 0;
     updateRollButton(rollsLeft);
     updatePlayButton();
@@ -327,6 +333,17 @@ const confirmSelectedScore = () => {
     selectedScore.onclick = null;
 };
 
+const getScoresAsArray = () => {
+    const result = Array.from(new Array(NUMBER_OF_CATEGORIES)).map(_ => null);
+    const confirmedScores = document.querySelectorAll('.score.confirmed:not(#bonus)');
+    confirmedScores.forEach(score => {
+        const scoreIndex = Number(score.id.split('-').reverse()[0] - 1); // score index 0-based
+        result[scoreIndex] = Number(score.dataset.score);
+    });
+    result.push(Number(document.querySelector('#bonus').dataset.score) || 0);
+    return result;
+};
+
 const onTurnPlayed = () => {
     confirmSelectedScore();
     updateBonus();
@@ -337,9 +354,60 @@ const onTurnPlayed = () => {
     updateRollButton(rollsLeft);
     updatePlayButton();
     checkGameOver();
+    remove('dice');
+    save('rollsLeft', rollsLeft);
+    save('scores', getScoresAsArray());
 };
 
 const addListenerToPlayButton = () => {
     const playButton = document.querySelector('#play-btn');
     playButton.onclick = onTurnPlayed;
 };
+
+const populateDice = dice => {
+    dice.forEach((die, index) => {
+        const dieContainer = document.querySelector(`#die-${index + 1}`);
+        setDieImage(dieContainer, die);
+        dieContainer.dataset.die = die;
+        dieContainer.onclick = () => {
+            dieContainer.classList.toggle('selected');
+        }
+    });
+};
+
+const populateConfirmedScores = scores => {
+    scores.pop(); // bonus will be handled separately
+    scores.forEach((score, index) => {
+        if (score !== null) {
+            const scoreContainer = document.querySelector(`#score-${index + 1}`);
+            scoreContainer.classList.add('confirmed');
+            scoreContainer.innerText = score;
+            scoreContainer.dataset.score = score;
+        }
+    });
+};
+
+const loadGameInProgress = () => {
+    const dice = load('dice');
+    const scores = load('scores');
+    populateConfirmedScores(scores);
+    if (dice !== null) {
+        populateDice(dice);
+        generatePossibleScores(dice);
+    }
+    updateBonus();
+    updateTotalScore();
+    updateRollButton(rollsLeft);
+};
+
+const isGameInProgress = () => load('scores') !== null;
+
+let rollsLeft = isGameInProgress() ? load('rollsLeft') : ROLLS_PER_TURN;
+if (isGameInProgress()) {
+    loadGameInProgress();
+} else {
+    localStorage.clear();
+}
+
+addListenerToRollButton();
+addListenerToPlayButton();
