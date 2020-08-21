@@ -186,11 +186,17 @@ const clearDice = () => {
     });
 };
 
+const clearLastGameData = () => {
+    remove('dice');
+    remove('scores');
+    remove('turnsLeft');
+};
+
 const reset = () => {
     if (isGameInProgress() && prompt(PROMPT_MESSAGE) !== PROMPT_CONFIRM_KEYWORD) {
         return;
     }
-    localStorage.clear();
+    clearLastGameData();
     resetAllScores();
     resetBonus();
     resetTotal();
@@ -286,15 +292,27 @@ const addListenerToRollButton = () => {
     }
 };
 
+const updateHighScore = highScore => document.querySelector('#high-score').innerText = highScore;
+
+const isHighScore = score => score > highScore;
+
 const onGameOver = () => {
+    let gameOverMessage = 'Game over! Score';
+    const totalScore = Number(document.querySelector('#total').dataset.total);
+    if (isHighScore(totalScore)) {
+        gameOverMessage = 'New high score';
+        highScore = totalScore;
+        updateHighScore(highScore);
+        save('highScore', highScore);
+    }
     // used setTimeout because the alert would come before the scores/total score have been updated on Chrome
     // reference: https://stackoverflow.com/questions/38960101/why-is-element-not-being-shown-before-alert
     setTimeout(() => {
-        alert(`Game over! Score: ${document.querySelector('#total').dataset.total}`);
+        alert(`${gameOverMessage}: ${totalScore}`);
     }, GAME_OVER_POPUP_DELAY);
     rollsLeft = 0;
     updateRollButton(rollsLeft);
-    updatePlayButton();
+    save('rollsLeft', rollsLeft);
 };
 
 const checkGameOver = () => {
@@ -402,11 +420,13 @@ const loadGameInProgress = () => {
 
 const isGameInProgress = () => load('scores') !== null;
 
+let highScore = load('highScore') || 0;
 let rollsLeft = isGameInProgress() ? load('rollsLeft') : ROLLS_PER_TURN;
+updateHighScore(highScore);
 if (isGameInProgress()) {
     loadGameInProgress();
 } else {
-    localStorage.clear();
+    clearLastGameData();
 }
 
 addListenerToRollButton();

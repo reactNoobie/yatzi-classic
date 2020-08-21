@@ -24,12 +24,8 @@ h1, h2 {
     font-size: 200%;
 }
 
-#game-over {
-    /* display: none; */
-}
-
-#game-over button {
-    font-size: 80%;
+#new-game-btn {
+    font-size: 100%;
 }
 
 main {
@@ -68,7 +64,7 @@ td, th {
     background-image: linear-gradient(45deg, teal, lightblue);
 }
 
-.score:not(.confirmed):not(.selected) {
+.score:not(#bonus):not(.confirmed):not(.selected) {
     opacity: 0.4;
 }
 
