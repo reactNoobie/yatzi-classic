@@ -193,18 +193,38 @@ const clearLastGameData = () => {
 };
 
 const reset = () => {
-    if (isGameInProgress() && prompt(PROMPT_MESSAGE) === PROMPT_CONFIRM_KEYWORD) {
-        clearLastGameData();
-        resetAllScores();
-        resetBonus();
-        resetTotal();
-        clearDice();
-        updateRollButton();
-        updatePlayButton();
+    clearLastGameData();
+    resetAllScores();
+    resetBonus();
+    resetTotal();
+    clearDice();
+    updateRollButton();
+    updatePlayButton();
+};
+
+const isHidden = element => element.style.display !== 'block';
+const hide = element => element.style.display = 'none';
+const show = element => element.style.display = 'block';
+
+const newGameButton = document.querySelector('#new-game-btn');
+const newGameConfirmation = document.querySelector('#new-game-confirmation');
+
+newGameButton.onclick = () => {
+    if (isHidden(newGameConfirmation)) {
+        show(newGameConfirmation);
+    } else {
+        hide(newGameConfirmation);
     }
 };
 
-document.querySelector('#new-game-btn').onclick = reset;
+document.querySelector('#new-game-yes-btn').onclick = () => {
+    hide(newGameConfirmation);
+    reset();
+};
+
+document.querySelector('#new-game-no-btn').onclick = () => {
+    hide(newGameConfirmation);
+};
 
 const updateRollButton = () => {
     const rollsLeft = load('rollsLeft');
