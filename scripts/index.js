@@ -189,27 +189,25 @@ const clearDice = () => {
 const clearLastGameData = () => {
     remove('dice');
     remove('scores');
-    remove('turnsLeft');
+    save('rollsLeft', ROLLS_PER_TURN);
 };
 
 const reset = () => {
-    if (isGameInProgress() && prompt(PROMPT_MESSAGE) !== PROMPT_CONFIRM_KEYWORD) {
-        return;
+    if (isGameInProgress() && prompt(PROMPT_MESSAGE) === PROMPT_CONFIRM_KEYWORD) {
+        clearLastGameData();
+        resetAllScores();
+        resetBonus();
+        resetTotal();
+        clearDice();
+        updateRollButton();
+        updatePlayButton();
     }
-    clearLastGameData();
-    resetAllScores();
-    resetBonus();
-    resetTotal();
-    clearDice();
-
-    rollsLeft = ROLLS_PER_TURN;
-    updateRollButton(rollsLeft);
-    updatePlayButton();
 }
 
 document.querySelector('#new-game-btn').onclick = reset;
 
-const updateRollButton = rollsLeft => {
+const updateRollButton = () => {
+    const rollsLeft = load('rollsLeft');
     const rollButton = document.querySelector('#roll-btn');
     rollButton.innerText = `Roll (${rollsLeft})`;
     rollButton.disabled = (rollsLeft === 0);
@@ -282,37 +280,31 @@ const addListenerToRollButton = () => {
     document.querySelector('#roll-btn').onclick = () => {
         deselectElements('.score.selected');
         rollDice();
-        rollsLeft--;
         const dice = getDiceAsArray();
         generatePossibleScores(dice);
-        updateRollButton(rollsLeft);
-        updatePlayButton();
         save('dice', dice);
-        save('rollsLeft', rollsLeft);
+        save('rollsLeft', load('rollsLeft') - 1);
+        updateRollButton();
+        updatePlayButton();
     }
 };
 
-const updateHighScore = highScore => document.querySelector('#high-score').innerText = highScore;
+const updateHighScore = () => {
+    const highScore = load('highScore');
+    document.querySelector('#high-score').innerText = highScore;
+};
 
-const isHighScore = score => score > highScore;
+const getTotalScore = () => Number(document.querySelector('#total').dataset.total);
 
 const onGameOver = () => {
-    let gameOverMessage = 'Game over! Score';
-    const totalScore = Number(document.querySelector('#total').dataset.total);
-    if (isHighScore(totalScore)) {
-        gameOverMessage = 'New high score';
-        highScore = totalScore;
-        updateHighScore(highScore);
-        save('highScore', highScore);
-    }
+    const totalScore = getTotalScore();
     // used setTimeout because the alert would come before the scores/total score have been updated on Chrome
     // reference: https://stackoverflow.com/questions/38960101/why-is-element-not-being-shown-before-alert
     setTimeout(() => {
-        alert(`${gameOverMessage}: ${totalScore}`);
+        alert(`Game over! Score: ${totalScore}`);
     }, GAME_OVER_POPUP_DELAY);
-    rollsLeft = 0;
-    updateRollButton(rollsLeft);
-    save('rollsLeft', rollsLeft);
+    save('rollsLeft', 0);
+    updateRollButton(); // this would be called from onTurnPlayed anyway
 };
 
 const checkGameOver = () => {
@@ -321,6 +313,19 @@ const checkGameOver = () => {
         onGameOver();
     }
 };
+
+const onHighScore = score => {
+    save('highScore', score);
+    updateHighScore();
+};
+
+const isHighScore = score => score > highScore;
+
+const checkHighScore = currentScore => {
+    if (isHighScore(currentScore)) {
+        onHighScore(currentScore);
+    }
+}
 
 const updateTotalScore = () => {
     let totalScore = 0;
@@ -368,13 +373,13 @@ const onTurnPlayed = () => {
     updateTotalScore();
     clearSuggestedScores();
     clearDice();
-    rollsLeft = ROLLS_PER_TURN;
-    updateRollButton(rollsLeft);
-    updatePlayButton();
-    checkGameOver();
-    remove('dice');
-    save('rollsLeft', rollsLeft);
     save('scores', getScoresAsArray());
+    remove('dice');
+    save('rollsLeft', ROLLS_PER_TURN);
+    checkHighScore(getTotalScore());
+    checkGameOver();
+    updateRollButton();
+    updatePlayButton();
 };
 
 const addListenerToPlayButton = () => {
@@ -415,14 +420,22 @@ const loadGameInProgress = () => {
     }
     updateBonus();
     updateTotalScore();
-    updateRollButton(rollsLeft);
 };
 
 const isGameInProgress = () => load('scores') !== null;
 
-let highScore = load('highScore') || 0;
-let rollsLeft = isGameInProgress() ? load('rollsLeft') : ROLLS_PER_TURN;
-updateHighScore(highScore);
+const highScore = load('highScore');
+if (highScore === null) {
+    save('highScore', 0);
+}
+updateHighScore();
+
+const rollsLeft = load('rollsLeft');
+if (rollsLeft === null) {
+    save('rollsLeft', ROLLS_PER_TURN);
+}
+updateRollButton();
+
 if (isGameInProgress()) {
     loadGameInProgress();
 } else {
