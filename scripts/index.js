@@ -202,7 +202,7 @@ const reset = () => {
         updateRollButton();
         updatePlayButton();
     }
-}
+};
 
 document.querySelector('#new-game-btn').onclick = reset;
 
@@ -274,7 +274,7 @@ const deselectElements = querySelector => {
     if (selectedElements) {
         selectedElements.forEach(element => element.classList.remove('selected'));
     }
-}
+};
 
 const addListenerToRollButton = () => {
     document.querySelector('#roll-btn').onclick = () => {
@@ -287,11 +287,6 @@ const addListenerToRollButton = () => {
         updateRollButton();
         updatePlayButton();
     }
-};
-
-const updateHighScore = () => {
-    const highScore = load('highScore');
-    document.querySelector('#high-score').innerText = highScore;
 };
 
 const getTotalScore = () => Number(document.querySelector('#total').dataset.total);
@@ -314,6 +309,11 @@ const checkGameOver = () => {
     }
 };
 
+const updateHighScore = () => {
+    const highScore = load('highScore');
+    document.querySelector('#high-score').innerText = highScore;
+};
+
 const onHighScore = score => {
     save('highScore', score);
     updateHighScore();
@@ -325,7 +325,7 @@ const checkHighScore = currentScore => {
     if (isHighScore(currentScore)) {
         onHighScore(currentScore);
     }
-}
+};
 
 const updateTotalScore = () => {
     let totalScore = 0;
