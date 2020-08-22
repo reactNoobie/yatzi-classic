@@ -23,8 +23,9 @@ h1, h2 {
     font-size: 200%;
 }
 
-#new-game-btn {
-    font-size: 100%;
+#new-game-confirmation {
+    display: none;
+    font-size: 50%;
 }
 
 main {
