@@ -272,7 +272,7 @@ const getDiceAsArray = () => {
 
 const setDieImage = (dieImageContainer, valueForDie) => {
     const imageForDie = dieImageContainer.querySelector('img');
-    imageForDie.src = `images/${valueForDie}.png`;
+    imageForDie.src = `images/${valueForDie}.svg`;
     imageForDie.alt = `Die facing ${valueForDie}`;
     imageForDie.style.visibility = 'visible';
 };

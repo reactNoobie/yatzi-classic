@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 
 <head>
     <title>Yatzi Classic</title>
@@ -14,12 +14,12 @@
         <h2>
             (High score: <span id="high-score">N/A</span>)<br><br>
             <button id="new-game-btn">New game</button>
-            <div id="new-game-confirmation">
-                <span>Sure?</span>
-                <button id="new-game-yes-btn">Yes</button>
-                <button id="new-game-no-btn">No</button>
-            </div>
         </h2>
+        <div id="new-game-confirmation">
+            <span>Sure?</span>
+            <button id="new-game-yes-btn">Yes</button>
+            <button id="new-game-no-btn">No</button>
+        </div>
     </header>
     <main>
         <table>
@@ -31,58 +31,58 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
+                    <td class="name">1</td>
                     <td class="score minor" id="score-1" data-score="null"></td>
                     <td class="desc">one</td>
-                    <td>3X</td>
+                    <td class="name">3X</td>
                     <td class="score" id="score-7" data-score="null"></td>
                     <td class="desc">three of a kind</td>
                 </tr>
                 <tr>
-                    <td>2</td>
+                    <td class="name">2</td>
                     <td class="score minor" id="score-2" data-score="null"></td>
                     <td class="desc">two</td>
-                    <td>4X</td>
+                    <td class="name">4X</td>
                     <td class="score" id="score-8" data-score="null"></td>
                     <td class="desc">four of a kind</td>
                 </tr>
                 <tr>
-                    <td>3</td>
+                    <td class="name">3</td>
                     <td class="score minor" id="score-3" data-score="null"></td>
                     <td class="desc">three</td>
-                    <td>🏠</td>
+                    <td class="name">🏠</td>
                     <td class="score" id="score-9" data-score="null"></td>
                     <td class="desc">full house</td>
                 </tr>
                 <tr>
-                    <td>4</td>
+                    <td class="name">4</td>
                     <td class="score minor" id="score-4" data-score="null"></td>
                     <td class="desc">four</td>
-                    <td>SS</td>
+                    <td class="name">ss</td>
                     <td class="score" id="score-10" data-score="null"></td>
                     <td class="desc">small straight</td>
                 </tr>
                 <tr>
-                    <td>5</td>
+                    <td class="name">5</td>
                     <td class="score minor" id="score-5" data-score="null"></td>
                     <td class="desc">five</td>
-                    <td>LS</td>
+                    <td class="name">ls</td>
                     <td class="score" id="score-11" data-score="null"></td>
                     <td class="desc">large straight</td>
                 </tr>
                 <tr>
-                    <td>6</td>
+                    <td class="name">6</td>
                     <td class="score minor" id="score-6" data-score="null"></td>
                     <td class="desc">six</td>
-                    <td>Y</td>
+                    <td class="name">Y</td>
                     <td class="score" id="score-12" data-score="null"></td>
                     <td class="desc">yatzi</td>
                 </tr>
                 <tr>
-                    <td>section bonus +35</td>
+                    <td class="name">+35</td>
                     <td class="score" id="bonus" data-score="null">0/63</td>
-                    <td></td>
-                    <td>?</td>
+                    <td class="desc">section bonus</td>
+                    <td class="name">?</td>
                     <td class="score" id="score-13" data-score="null"></td>
                     <td class="desc">chance</td>
                 </tr>
@@ -91,22 +91,26 @@
                 <tr>
                     <td>
                         <button id="roll-btn">Roll (3)</button>
-                        <button id="play-btn" disabled>Play</button>
                     </td>
                     <td class="die" data-die="null" id="die-1">
-                        <img src="images/1.png" alt="die facing 1">
+                        <img src="images/1.svg" alt="die facing 1">
                     </td>
                     <td class="die" data-die="null" id="die-2">
-                        <img src="images/2.png" alt="die facing 2">
+                        <img src="images/2.svg" alt="die facing 2">
                     </td>
                     <td class="die" data-die="null" id="die-3">
-                        <img src="images/3.png" alt="die facing 3">
+                        <img src="images/3.svg" alt="die facing 3">
                     </td>
                     <td class="die" data-die="null" id="die-4">
-                        <img src="images/4.png" alt="die facing 4">
+                        <img src="images/4.svg" alt="die facing 4">
                     </td>
                     <td class="die" data-die="null" id="die-5">
-                        <img src="images/5.png" alt="die facing 5">
+                        <img src="images/5.svg" alt="die facing 5">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <button id="play-btn" disabled>Play</button>
                     </td>
                 </tr>
                 <tr>
