@@ -54,12 +54,12 @@ table tr:nth-child(2n+1) {
 
 td, th {
     height: 4rem;
-    width: 12vw;
+    width: 13vw;
     text-align: center;
 }
 
 tfoot tr:nth-child(1) {
-    height: 12vw;
+    height: 13vw;
 }
 
 tfoot button {
@@ -67,7 +67,7 @@ tfoot button {
     height: 100%;
 }
 
-.score, .name, tfoot {
+.score, tfoot {
     font-size: 2rem;
 }
 
