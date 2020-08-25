@@ -91,7 +91,7 @@ tfoot button {
 }
 
 .selected {
-    background-image: linear-gradient(90deg, black, cyan);
+    background-image: linear-gradient(90deg, darkcyan, cyan);
 }
 
 .confirmed:not(#bonus) {
