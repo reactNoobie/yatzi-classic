@@ -176,11 +176,17 @@ const resetTotal = () => {
     total.innerText = INITIAL_TEXT_TOTAL;
 };
 
+const removeElement = element => {
+    if (element !== null) {
+        element.remove();
+    }
+}
+
 const clearDice = () => {
     const dice = document.querySelectorAll('.die');
     dice.forEach(die => {
         die.classList.remove('selected');
-        die.querySelector('img').style.visibility = 'hidden';
+        removeElement(die.querySelector('img'));
         die.dataset.die = null;
         die.onclick = null;
     });
@@ -271,15 +277,16 @@ const getDiceAsArray = () => {
 };
 
 const setDieImage = (dieImageContainer, valueForDie) => {
-    const imageForDie = dieImageContainer.querySelector('img');
+    const imageForDie = document.createElement('img');
     imageForDie.src = `images/${valueForDie}.svg`;
     imageForDie.alt = `Die facing ${valueForDie}`;
-    imageForDie.style.visibility = 'visible';
+    dieImageContainer.appendChild(imageForDie);
 };
 
 const rollDice = () => {
     const remainingDice = document.querySelectorAll('.die:not(.selected)');
     remainingDice.forEach(die => {
+        removeElement(die.querySelector('img'));
         const valueForDie = Math.floor(Math.random() * 6) + 1;
         setDieImage(die, valueForDie);
         die.dataset.die = valueForDie;
@@ -410,6 +417,7 @@ const addListenerToPlayButton = () => {
 const populateDice = dice => {
     dice.forEach((die, index) => {
         const dieContainer = document.querySelector(`#die-${index + 1}`);
+        removeElement(dieContainer.querySelector('img'));
         setDieImage(dieContainer, die);
         dieContainer.dataset.die = die;
         dieContainer.onclick = () => {
