@@ -109,7 +109,6 @@ tfoot button {
     display: block;
     margin: auto;
     height: 11vw;
-    visibility: hidden;
 }
 
 .selected {
