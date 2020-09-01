@@ -1,7 +1,24 @@
+/* #3b78e7, #4dd0e1, #f06292, #d81b60, #9c27b0, #ce93d8, #0d904f, #9ccc65 */
+
+@font-face {
+    font-family: 'reeyregular';
+    src: url('../fonts/reey-regular-webfont.woff2') format('woff2'), url('../fonts/reey-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'kaushan_scriptregular';
+    src: url('../fonts/kaushanscript-regular-webfont.woff2') format('woff2'), url('../fonts/kaushanscript-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html {
     font-size: 1.5rem;
     color: white;
-    font-family: monospace;
+    /* font-family: monospace; */
+    font-family: 'kaushan_scriptregular';
     font-weight: bold;
 }
 
@@ -20,7 +37,7 @@ button {
     padding: 0 1rem;
     height: 2rem;
     font-size: 1rem;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: inherit;
 }
 
 button:disabled {
@@ -68,7 +85,11 @@ tfoot button {
 }
 
 .score, tfoot {
-    font-size: 2rem;
+    font-size: 1.5rem;
+}
+
+#bonus {
+    font-size: 1.2rem;
 }
 
 #bonus.confirmed {
