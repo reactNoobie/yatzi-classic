@@ -3,6 +3,7 @@
 
 <head>
     <title>Yatzi Classic</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="styles/style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <script src="scripts/index.js" defer></script>
@@ -16,7 +17,7 @@
             <button id="new-game-btn">New game</button>
         </h2>
         <div id="new-game-confirmation">
-            <span>Sure?</span>
+            <span>Sure? </span>
             <button id="new-game-yes-btn">Yes</button>
             <button id="new-game-no-btn">No</button>
         </div>
@@ -89,9 +90,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td>
-                        <button id="roll-btn">Roll (3)</button>
-                    </td>
+                    <td><button id="roll-btn">Roll (3)</button></td>
                     <td class="die" data-die="null" id="die-1"></td>
                     <td class="die" data-die="null" id="die-2"></td>
                     <td class="die" data-die="null" id="die-3"></td>
@@ -99,9 +98,7 @@
                     <td class="die" data-die="null" id="die-5"></td>
                 </tr>
                 <tr>
-                    <td colspan="6">
-                        <button id="play-btn" disabled>Play</button>
-                    </td>
+                    <td colspan="6"><button id="play-btn" disabled>Play</button></td>
                 </tr>
                 <tr>
                     <th colspan="5" scope="row">Total</th>
