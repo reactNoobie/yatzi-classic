@@ -114,8 +114,12 @@ tfoot button {
 }
 
 @keyframes die-img {
-    from {transform: scale(0) rotateZ(0deg);}
-    to {transform: scale(1) rotateZ(360deg);}
+    from {
+        transform: scale(0) rotateZ(0deg);
+    }
+    to {
+        transform: scale(1) rotateZ(3600deg);
+    }
 }
 
 .selected {
