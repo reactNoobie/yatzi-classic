@@ -110,6 +110,12 @@ tfoot button {
     display: block;
     margin: auto;
     height: 11vmin;
+    animation: die-img 1s;
+}
+
+@keyframes die-img {
+    from {transform: scale(0) rotateZ(0deg);}
+    to {transform: scale(1) rotateZ(360deg);}
 }
 
 .selected {
