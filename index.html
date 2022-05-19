@@ -6,21 +6,23 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-095CZ8Q3F9"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
 
-        gtag('config', 'G-095CZ8Q3F9');
+        gtag("config", "G-095CZ8Q3F9");
     </script>
     <title>Yatzi Classic</title>
     <!-- <meta name="viewport" content="width=device-width,initial-scale=1"> -->
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <script src="scripts/index.js" defer></script>
 </head>
 
 <body>
     <header>
-        <h1>Yatzi Classic</h1>
+        <!-- <h1>Yatzi Classic</h1>
         <h2>
             (High score: <span id="high-score">N/A</span>)<br><br>
             <button id="new-game-btn">New game</button>
@@ -29,10 +31,10 @@
             <span>Sure? </span>
             <button id="new-game-yes-btn">Yes</button>
             <button id="new-game-no-btn">No</button>
-        </div>
+        </div> -->
     </header>
     <main>
-        <table>
+        <!-- <table>
             <thead>
                 <tr class="table-head">
                     <th colspan="3" scope="colgroup">Minor</th>
@@ -114,7 +116,16 @@
                     <td id="total" data-total="null">0</td>
                 </tr>
             </tfoot>
-        </table>
+        </table> -->
+        <iframe src="https://fritz.chessbase.com" style="width: 100%; height: 100%; position: absolute;"></iframe>
+        <!-- <iframe
+        src="https://chess.org"
+        width="1024"
+        height="980"
+        frameborder="0"
+        style="border: none; padding: 0; margin: 0"
+        ><p>your browser does not support iframes.</p></iframe
+      > -->
     </main>
     <footer>
         <!-- Footer -->
